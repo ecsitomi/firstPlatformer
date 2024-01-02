@@ -5,7 +5,7 @@ from level import Level
 pygame.init() #inicializálja magát a pygame
 screen=pygame.display.set_mode((WIDTH,HEIGHT)) #meghatározza az ablakot
 pygame.display.set_caption('My Firs Platformer') #főcím
-clock=pygame.time.Clock() #időzítő
+clock=pygame.time. Clock() #időzítő
 
 #háttérkép
 bg_surf=pygame.image.load(BG_IMAGE).convert_alpha()

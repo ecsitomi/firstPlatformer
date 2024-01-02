@@ -3,17 +3,17 @@ BG_COLOR=(255,255,255)
 BG_IMAGE='img/BG.png'
 
 level_map = [ #pálya szerkezete string listában
-  '                            ',
-  '                            ',
-  '                            ',
-  '          np                ',
-  '                            ',
-  '     noop                   ',
-  '                            ',
-  'op           noop           ',
-  '                            ',
-  'bbbbbbc    abbc   ac  abc   ',
-  'eeeeeef   aheejc  df  dejc  ']
+  '                                                        ',
+  '                                                        ',
+  '                                                        ',
+  '          np                          np                ',
+  '                                                        ',
+  '     noop                        noop                   ',
+  '                                                        ',
+  'op           noop           op           noop           ',
+  ' P                                                      ',
+  'bbbbbbc    abbc   ac  abc   bbbbbbc    abbc   ac  abc   ',
+  'eeeeeef   aheejc  df  dejc  eeeeeef   aheejc  df  dejc  ']
 
 tile_size=64 #csempek szélessége/magassága pixelben
 
