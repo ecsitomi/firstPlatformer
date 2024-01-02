@@ -1,5 +1,5 @@
 import pygame
-from pygame.sprite import _Group
+#from pygame.sprite import _Group
 
 class Tile(pygame.sprite.Sprite): #minden csempe egy objektum lesz
     def __init__(self, size, x, y): #tartalmazza a nagyságát, és a koordinátáját

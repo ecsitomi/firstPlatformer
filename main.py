@@ -1,5 +1,6 @@
 import pygame
 from settings import * #settings.py fájlból behúz mindent
+from level import Level
 
 pygame.init() #inicializálja magát a pygame
 screen=pygame.display.set_mode((WIDTH,HEIGHT)) #meghatározza az ablakot
@@ -10,6 +11,9 @@ clock=pygame.time.Clock() #időzítő
 bg_surf=pygame.image.load(BG_IMAGE).convert_alpha()
 bg_rect=bg_surf.get_rect(bottomleft=(0,HEIGHT))
 
+#szint
+level=Level(level_map,screen)#hozz létre egy szint objektumot a levelmap(ami most settingsben van) alapján a screenre
+
 running=True #futtatás
 while running:
     for event in pygame.event.get(): #események loop
@@ -18,6 +22,8 @@ while running:
 
     screen.fill(BG_COLOR) #háttérszín
     screen.blit(bg_surf,bg_rect) #háttérkép
+
+    level.run() #szint megrajzolása a képernyőn
 
     pygame.display.update() #frissítés
     clock.tick(FPS)
