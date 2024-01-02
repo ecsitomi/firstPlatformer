@@ -23,7 +23,7 @@ while running:
     screen.fill(BG_COLOR) #háttérszín
     screen.blit(bg_surf,bg_rect) #háttérkép
 
-    level.run() #szint megrajzolása a képernyőn
+    level.run() #szint megrajzolása a képernyőn és az azon történő események futtatása
 
     pygame.display.update() #frissítés
     clock.tick(FPS)

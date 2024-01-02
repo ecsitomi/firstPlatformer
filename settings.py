@@ -1,6 +1,6 @@
-FPS=60
-BG_COLOR=(255,255,255)
-BG_IMAGE='img/BG.png'
+FPS=60 #képfrissítés per másodperc
+BG_COLOR=(255,255,255) #háttérszín
+BG_IMAGE='img/BG.png' #háttérkép
 
 level_map = [ #pálya szerkezete string listában
   '                                                        ',
