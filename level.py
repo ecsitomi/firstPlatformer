@@ -1,5 +1,5 @@
 import pygame
-from settings import tile_size
+from settings import tile_size, WIDTH
 from tiles import TerrainTile
 from player import Player
 
@@ -9,6 +9,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.terrain_tiles=pygame.sprite.Group() #tároló amibe majd pakoljuk bele a csempéket
         self.player=pygame.sprite.GroupSingle()
         self.setup_level(level_data) #szintek legenerálásának elindítása
+        self.world_shift=0 #platform mozgatás kameranézet
 
     def setup_level(self,layout): #szintek legenerálása metódus, itt a layout=level_data
         for row_index, row in enumerate(layout): #sorok és indexük
@@ -22,6 +23,21 @@ class Level: # szintek önálló osztály, nem sprite osztály
                 elif tile_type!=' ': #csempe legenerálása
                     tile=TerrainTile(tile_size,x,y,tile_type) #csempe objektum(méret,koordináták,típus)
                     self.terrain_tiles.add(tile) #a létrejött csempét hozzáadjuk a csempegyűjtő grouphoz (lásd fentebb)
+
+    def scroll_x(self): #platform mozgás beállítása kamera
+        player=self.player.sprite
+        player_x=player.rect.centerx
+        direction_x=player.direction.x
+
+        if player_x<WIDTH/4 and direction_x<0: #balra mozgás
+            self.world_shift=8
+            player.speed=0
+        elif player_x>WIDTH/4*3 and direction_x>0: #jobbra mozgás
+            self.world_shift=-8
+            player.speed=0
+        else:
+            self.world_shift=0
+            player.speed=8
 
     def horizontal_movement_collision(self):
         player=self.player.sprite #játékosra hivatkozunk ami a groupban van
@@ -47,10 +63,6 @@ class Level: # szintek önálló osztály, nem sprite osztály
                 elif player.direction.y<0: #ha ugrik
                     player.rect.top=sprite.rect.bottom #ütközés
                     player.direction.y=0 #megáll a mozgás irány változás
-
-
-                
-
     
     def run(self): #elemek megrajzolása
         self.terrain_tiles.draw(self.display_surface) #játékablakban
@@ -58,3 +70,5 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.player.update() #játékos frissítése
         self.horizontal_movement_collision() #ütközések
         self.vertical_movement_collision()
+        self.scroll_x() #kamera mozgás jobbra balra
+        self.terrain_tiles.update(self.world_shift) #kamera mozgásnál a csempék mozgatása
