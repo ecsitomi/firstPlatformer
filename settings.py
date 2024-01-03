@@ -2,20 +2,41 @@ FPS=60 #képfrissítés per másodperc
 BG_COLOR=(255,255,255) #háttérszín
 BG_IMAGE='img/BG.png' #háttérkép
 
-level_map = [ #pálya szerkezete string listában
-  '                                                        ',
-  '                                                        ',
-  '                                                        ',
-  '          np                          np                ',
-  '                                                        ',
-  '     noop                        noop                   ',
-  '                                                        ',
-  'op           noop           op           noop           ',
-  ' P                                                      ',
-  'bbbbbbc    abbc   ac  abc   bbbbbbc    abbc   ac  abc   ',
-  'eeeeeef   aheejc  df  dejc  eeeeeef   aheejc  df  dejc  ']
-
 tile_size=64 #csempek szélessége/magassága pixelben
 
-WIDTH=1200
+#pálya szerkezete string listában
+level_map = [
+    '                                                        ',
+    '                                                        ',
+    '          T2                          T2                ',
+    '          np                          np                ',
+    '    C135EC                      C135EC                  ',
+    '     noop                        noop                   ',
+    '1T          CE1E45TC        1T          CE1E45TC        ',
+    'np           noooop         np           noooop         ',
+    '431P25T    232    2T  322T1 431E25T    232    2T  322T1 ',
+    'abbbbbc   2abbcT  ac  abbbc abbbbbc   2abbcT  ac  abbbc ',
+    'deeeeef   aheejc  df  deeejcdeeeeef   aheejc  df  deeejc']
+
+"""
+  terrain: a-p
+  cactus: 1
+  plant: 2
+  rock: 3
+  skeleton: 4
+  tree: 5
+  crate: T
+  player: P
+  enemy: E
+"""
+
+others = { #különböző pályaelemek kódjai
+'1': 'cactus',
+'2': 'plant',
+'3': 'rock',
+'4': 'skeleton',
+'5': 'tree'
+}  
+
+WIDTH=1200 #képernyő szélessége
 HEIGHT=len(level_map)*tile_size #pálya magassága (sorok a listában) * a pixel számmal

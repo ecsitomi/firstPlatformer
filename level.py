@@ -1,13 +1,14 @@
 import pygame
 from settings import tile_size, WIDTH
-from tiles import TerrainTile
+from tiles import TerrainTile, Crate
 from player import Player
 
 class Level: # szintek önálló osztály, nem sprite osztály
     def __init__(self, level_data, surface): #surface a felület, vagyis a képernyő, leveldata hogy melyik szint
         self.display_surface=surface #játékablak, hogy hol rajzolja meg az elemeket
         self.terrain_tiles=pygame.sprite.Group() #tároló amibe majd pakoljuk bele a csempéket
-        self.player=pygame.sprite.GroupSingle()
+        self.player=pygame.sprite.GroupSingle() #a játékos sprite csoportja
+        self.crates=pygame.sprite.Group() #a ládák csoportja
         self.setup_level(level_data) #szintek legenerálásának elindítása
         self.world_shift=0 #platform mozgatás kameranézet
 
@@ -19,7 +20,9 @@ class Level: # szintek önálló osztály, nem sprite osztály
                 if tile_type=='P': #játékos a pályán
                     player_sprite=Player((x,y))
                     self.player.add(player_sprite)
-
+                elif tile_type=='T': #ha ládát talál
+                    tile=Crate(tile_size,x,y)
+                    self.crates.add(tile) #hozzáadás a láda csoporthoz
                 elif tile_type!=' ': #csempe legenerálása
                     tile=TerrainTile(tile_size,x,y,tile_type) #csempe objektum(méret,koordináták,típus)
                     self.terrain_tiles.add(tile) #a létrejött csempét hozzáadjuk a csempegyűjtő grouphoz (lásd fentebb)
@@ -65,10 +68,11 @@ class Level: # szintek önálló osztály, nem sprite osztály
                     player.direction.y=0 #megáll a mozgás irány változás
     
     def run(self): #elemek megrajzolása
-        self.terrain_tiles.draw(self.display_surface) #játékablakban
-        self.player.draw(self.display_surface) #játékos kirajzolása a (játékablakban)
-        self.player.update() #játékos frissítése
         self.horizontal_movement_collision() #ütközések
         self.vertical_movement_collision()
         self.scroll_x() #kamera mozgás jobbra balra
+        self.terrain_tiles.draw(self.display_surface) #játékablakban
         self.terrain_tiles.update(self.world_shift) #kamera mozgásnál a csempék mozgatása
+        self.player.draw(self.display_surface) #játékos kirajzolása a (játékablakban)
+        self.player.update() #játékos frissítése
+        self.crates.update(self.world_shift) #ládák elmozgatása 
