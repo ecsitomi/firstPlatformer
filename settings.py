@@ -1,5 +1,7 @@
 FPS=60 #képfrissítés per másodperc
 BG_COLOR=(255,255,255) #háttérszín
+DESERT=(220,165,40)
+RED=(100,30,50)
 BG_IMAGE='img/BG.png' #háttérkép
 
 tile_size=64 #csempek szélessége/magassága pixelben

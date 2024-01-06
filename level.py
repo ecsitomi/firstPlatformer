@@ -1,5 +1,5 @@
 import pygame
-from settings import tile_size, WIDTH, others
+from settings import tile_size, WIDTH, HEIGHT, others, DESERT, RED
 from tiles import TerrainTile, Crate, Tile, OtherTile
 from player import Player
 from enemy import Enemy
@@ -7,6 +7,7 @@ from enemy import Enemy
 class Level: # szintek önálló osztály, nem sprite osztály
     def __init__(self, level_data, surface): #surface a felület, vagyis a képernyő, leveldata hogy melyik szint
         self.display_surface=surface #játékablak, hogy hol rajzolja meg az elemeket
+        self.leveldata=level_data
         self.terrain_tiles=pygame.sprite.Group() #tároló amibe majd pakoljuk bele a csempéket
         self.player=pygame.sprite.GroupSingle() #a játékos sprite csoportja
         self.crates=pygame.sprite.Group() #a ládák csoportja
@@ -16,6 +17,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.world_shift=0 #platform mozgatás kameranézet
         self.health=3
         self.points=0
+        #self.font=self.setup_font()
         self.setup_level(level_data) #szintek legenerálásának elindítása
 
     def setup_level(self,layout): #szintek legenerálása metódus, itt a layout=level_data
@@ -41,14 +43,6 @@ class Level: # szintek önálló osztály, nem sprite osztály
                 elif tile_type!=' ': #csempe legenerálása
                     tile=TerrainTile(tile_size,x,y,tile_type) #csempe objektum(méret,koordináták,típus)
                     self.terrain_tiles.add(tile) #a létrejött csempét hozzáadjuk a csempegyűjtő grouphoz (lásd fentebb)
-
-    def statsOnScreen(self):
-        font_path='img/font/ARCADEPI.TTF'
-        font_size=36
-        font=pygame.font.Font(font_path,font_size)
-        text=font.render(f'Health: {self.health} Points: {self.points}', True, (255,255,255))
-        text_rect=text.get_rect(topleft=(40,50))
-        self.display_surface.blit(text,text_rect)
     
     def scroll_x(self): #platform mozgás beállítása kamera
         player=self.player.sprite
@@ -108,10 +102,49 @@ class Level: # szintek önálló osztály, nem sprite osztály
                 if player_rect.bottom>enemy.rect.top and not self.player.sprite.on_ground: #és a játékos alja lentebb van mint az ellenség feje, mikor a játékos a levegőben van
                     self.points+=10 #akkor nyer
                     self.health+=1
-                    enemy.kill()
+                    self.enemys.remove(enemy)
+                    #enemy.kill() #nem tökéletesen töröl
                 if player_rect.bottom==enemy.rect.bottom and self.player.sprite.on_ground: #ha a játékos és az ellen egy szinten a földön ütköznek
                     self.player.sprite.jump() #akkor veszít
                     self.health-=1  
+
+    def setup_font(self,size): #betűtípus beállítása
+        font_path='img/font/ARCADEPI.TTF' #elérés
+        font_size=size #méret
+        #font=pygame.font.Font(font_path,font_size)
+        return pygame.font.Font(font_path,font_size) #visszaadott érték
+    
+    def statsOnScreen(self): #életerő és pontok kiiratása
+        font=self.setup_font(36) #betűtípus és méret
+        text=font.render(f'Health: {self.health} Points: {self.points}', True, DESERT) #mit
+        text_rect=text.get_rect(topleft=(40,50)) #hova
+        self.display_surface.blit(text,text_rect) #megjelenítés
+    
+    def end_game(self): #játék vége
+        if self.health<=0 or self.player.sprite.rect.top > HEIGHT: #ha az életerő kisebb vagy egyenlő mint nulla akkor vége vagy leesik
+            self.end_game_text(56,'LOSER') #szöveg kiírása
+            self.restart_game() #játék újrakezdése
+        if self.enemys.sprites()==[] and self.player.sprite.on_ground: #ha már nincs ellenség
+            self.end_game_text(56,'VICTORY') #szöveg
+            self.restart_game() #újrakezdés
+
+    def end_game_text(self, size, text): #záró szöveg kiíratása
+        font=self.setup_font(size) #betűtípus, méret beállítása
+        text=font.render(f'{text}',True,RED) #mi legyen a szöveg
+        text_rect=text.get_rect(center=(WIDTH/2,HEIGHT/2)) #hova
+        self.display_surface.blit(text,text_rect) #megjelenítés
+        pygame.display.flip() #szép kép betöltése
+        pygame.time.delay(2000) #várakoztatás
+
+    def restart_game(self): #játék újrakezdése
+        self.health = 3 # Játékstátus visszaállítása
+        self.points = 0
+        self.terrain_tiles.empty() # Töröljük az összes sprite csoport tartalmát
+        self.crates.empty()
+        self.enemys.empty()
+        self.constraints.empty()
+        self.other_tiles.empty()
+        self.setup_level(self.leveldata) # Újra inicializáljuk a szintet
     
     def run(self): #elemek megrajzolása
         self.horizontal_movement_collision() #ütközések
@@ -130,5 +163,6 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.player.update() #játékos frissítése
         self.player.draw(self.display_surface) #játékos kirajzolása a (játékablakban)
         self.statsOnScreen() #hp és pontok megjelenítése
-        self.hitCrate()
-        self.hitEnemy()
+        self.hitCrate() #ütközés a ládákkal
+        self.hitEnemy() #ütközés az ellenséggel
+        self.end_game() #játék vége
