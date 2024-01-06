@@ -2,6 +2,7 @@ import pygame
 from settings import tile_size, WIDTH
 from tiles import TerrainTile, Crate
 from player import Player
+from enemy import Enemy
 
 class Level: # szintek önálló osztály, nem sprite osztály
     def __init__(self, level_data, surface): #surface a felület, vagyis a képernyő, leveldata hogy melyik szint
@@ -9,6 +10,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.terrain_tiles=pygame.sprite.Group() #tároló amibe majd pakoljuk bele a csempéket
         self.player=pygame.sprite.GroupSingle() #a játékos sprite csoportja
         self.crates=pygame.sprite.Group() #a ládák csoportja
+        self.enemys=pygame.sprite.Group() #ellenségek csoportja
         self.setup_level(level_data) #szintek legenerálásának elindítása
         self.world_shift=0 #platform mozgatás kameranézet
 
@@ -22,7 +24,9 @@ class Level: # szintek önálló osztály, nem sprite osztály
                     self.player.add(player_sprite)
                 elif tile_type=='T': #ha ládát talál
                     tile=Crate(tile_size,x,y)
-                    self.crates.add(tile) #hozzáadás a láda csoporthoz
+                elif tile_type=='E': #ha ellenséget talál
+                    tile=Enemy(tile_size,x,y)
+                    self.enemys.add(tile) #hozzáadás az enemys csoporthoz
                 elif tile_type!=' ': #csempe legenerálása
                     tile=TerrainTile(tile_size,x,y,tile_type) #csempe objektum(méret,koordináták,típus)
                     self.terrain_tiles.add(tile) #a létrejött csempét hozzáadjuk a csempegyűjtő grouphoz (lásd fentebb)
