@@ -26,6 +26,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
                     self.player.add(player_sprite)
                 elif tile_type=='T': #ha ládát talál
                     tile=Crate(tile_size,x,y)
+                    self.crates.add(tile)
                 elif tile_type=='E': #ha ellenséget talál
                     tile=Enemy(tile_size,x,y)
                     self.enemys.add(tile) #hozzáadás az enemys csoporthoz
@@ -91,6 +92,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.terrain_tiles.update(self.world_shift) #kamera mozgásnál a csempék mozgatása
         self.terrain_tiles.draw(self.display_surface) #játékablakban
         self.crates.update(self.world_shift) #ládák elmozgatása 
+        self.crates.draw(self.display_surface) #ládák kirajzolása
         self.constraints.update(self.world_shift) #térelemek frissítése kameramozgáskor
         self.enemy_collision_reverse() #ellenség megfordítása
         self.enemys.update(self.world_shift) #ellenség update

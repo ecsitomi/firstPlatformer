@@ -19,5 +19,5 @@ class Enemy(Tile):
 
     def update(self, shift):
         self.rect.x+=shift
-        self.move()
+        self.remove()
 
