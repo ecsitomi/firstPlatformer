@@ -1,4 +1,5 @@
 import pygame
+from settings import others
 #from pygame.sprite import _Group
 
 class Tile(pygame.sprite.Sprite): #minden csempe egy objektum lesz
@@ -32,3 +33,14 @@ class Crate(Tile): #láda
         if self.image_index>len(self.image_list): #ne indexeljünk túl
             self.image_index=0
         self.image=self.image_list[int(self.image_index)]
+
+
+class OtherTile(Tile): #díszítőelemek
+    def __init__(self,size,x,y,type):
+        super().__init__(size,x,y)
+        self.image=pygame.image.load(f'img/others/{others[type]}.png').convert_alpha()
+        offset_y=y+size
+        self.rect=self.image.get_rect(bottomleft=(x,offset_y))
+    
+    def update(self, shift):
+        self.rect.x+=shift

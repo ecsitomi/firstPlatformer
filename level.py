@@ -1,6 +1,6 @@
 import pygame
-from settings import tile_size, WIDTH
-from tiles import TerrainTile, Crate, Tile
+from settings import tile_size, WIDTH, others
+from tiles import TerrainTile, Crate, Tile, OtherTile
 from player import Player
 from enemy import Enemy
 
@@ -12,6 +12,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.crates=pygame.sprite.Group() #a ládák csoportja
         self.enemys=pygame.sprite.Group() #ellenségek csoportja 
         self.constraints=pygame.sprite.Group() #térelemek csoportja
+        self.other_tiles=pygame.sprite.Group() #díszítő elemek
         self.setup_level(level_data) #szintek legenerálásának elindítása
         self.world_shift=0 #platform mozgatás kameranézet
 
@@ -31,6 +32,9 @@ class Level: # szintek önálló osztály, nem sprite osztály
                 elif tile_type=='C': #térelemek
                     constraint=Tile(tile_size,x,y)
                     self.constraints.add(constraint)
+                elif tile_type in others: #díszítőelemek
+                    tile=OtherTile(tile_size,x,y,tile_type) #itt a tile_type az others kódja, ami majd segít kiolvasni a fájlt
+                    self.other_tiles.add(tile)
                 elif tile_type!=' ': #csempe legenerálása
                     tile=TerrainTile(tile_size,x,y,tile_type) #csempe objektum(méret,koordináták,típus)
                     self.terrain_tiles.add(tile) #a létrejött csempét hozzáadjuk a csempegyűjtő grouphoz (lásd fentebb)
@@ -91,5 +95,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.enemy_collision_reverse() #ellenség megfordítása
         self.enemys.update(self.world_shift) #ellenség update
         self.enemys.draw(self.display_surface) #ellenség kirajzolása
+        self.other_tiles.update(self.world_shift) #díszítőelemek frissítése
+        self.other_tiles.draw(self.display_surface) #díszítőelemek kirajzolása
         self.player.update() #játékos frissítése
         self.player.draw(self.display_surface) #játékos kirajzolása a (játékablakban)

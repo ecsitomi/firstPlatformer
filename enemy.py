@@ -1,5 +1,5 @@
 import pygame
-from ranom import randint
+from random import randint
 from tiles import Tile
 
 class Enemy(Tile):
