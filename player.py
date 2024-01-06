@@ -1,5 +1,6 @@
 import pygame
 from support import import_folder
+from settings import HEIGHT
 
 class Player(pygame.sprite.Sprite): #játékos osztály
     def __init__(self, pos):
@@ -16,6 +17,7 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         self.gravity=0.8
         self.jump_speed=-16
         self.on_ground=True #földön van e
+        self.health=3
 
         self.status='idle' #kezdő státusz
         self.facing_right=True #jobbranéz
@@ -70,8 +72,13 @@ class Player(pygame.sprite.Sprite): #játékos osztály
     def jump(self):
         self.direction.y=self.jump_speed #irányváltozás felfelé ekkora sebességgel
 
+    def death(self): #ha leesik meghal 
+        if self.rect.top > HEIGHT or self.health<=0:
+            pygame.quit()
+
     def update(self): #játékos folyamatos frissítése
         self.get_input() #milyen billenytyű parancsot kapott
         self.get_status() #mozgás státusz
         self.animate() #animálás
+        self.death()
 

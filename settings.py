@@ -14,7 +14,7 @@ level_map = [
     '     noop                        noop                   ',
     '1T          CE1E45TC        1T          CE1E45TC        ',
     'np           noooop         np           noooop         ',
-    '431P25T    232    2T  322T1 431E25T    232    2T  322T1 ',
+    '431P25T    232    2T  322T1C431E25TC   232    2T  322T1 ',
     'abbbbbc   2abbcT  ac  abbbc abbbbbc   2abbcT  ac  abbbc ',
     'deeeeef   aheejc  df  deeejcdeeeeef   aheejc  df  deeejc']
 
