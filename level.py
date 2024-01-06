@@ -13,8 +13,10 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.enemys=pygame.sprite.Group() #ellenségek csoportja 
         self.constraints=pygame.sprite.Group() #térelemek csoportja
         self.other_tiles=pygame.sprite.Group() #díszítő elemek
-        self.setup_level(level_data) #szintek legenerálásának elindítása
         self.world_shift=0 #platform mozgatás kameranézet
+        self.health=3
+        self.points=0
+        self.setup_level(level_data) #szintek legenerálásának elindítása
 
     def setup_level(self,layout): #szintek legenerálása metódus, itt a layout=level_data
         for row_index, row in enumerate(layout): #sorok és indexük
@@ -40,6 +42,14 @@ class Level: # szintek önálló osztály, nem sprite osztály
                     tile=TerrainTile(tile_size,x,y,tile_type) #csempe objektum(méret,koordináták,típus)
                     self.terrain_tiles.add(tile) #a létrejött csempét hozzáadjuk a csempegyűjtő grouphoz (lásd fentebb)
 
+    def statsOnScreen(self):
+        font_path='img/font/ARCADEPI.TTF'
+        font_size=36
+        font=pygame.font.Font(font_path,font_size)
+        text=font.render(f'Health: {self.health} Points: {self.points}', True, (255,255,255))
+        text_rect=text.get_rect(topleft=(40,50))
+        self.display_surface.blit(text,text_rect)
+    
     def scroll_x(self): #platform mozgás beállítása kamera
         player=self.player.sprite
         player_x=player.rect.centerx
@@ -84,6 +94,25 @@ class Level: # szintek önálló osztály, nem sprite osztály
         for enemy in self.enemys.sprites():
             if pygame.sprite.spritecollide(enemy, self.constraints, False): #ha ellenség ütközik a térelemmel, akkor nem törlődik, hanem...
                 enemy.reverse() #megfordul az enemy
+
+    def hitCrate(self): #ütközés dobozzal
+        for crate in self.crates:
+            if self.player.sprite.rect.colliderect(crate.rect):
+                self.health+=1
+                self.crates.remove(crate)
+
+    def hitEnemy(self):
+        player_rect = self.player.sprite.rect
+        #enemies_hit = pygame.sprite.spritecollide(self.player.sprite, self.enemys, False)
+    
+        for enemy in self.enemys:
+            if player_rect.colliderect(enemy.rect):
+                if player_rect.bottom>enemy.rect.top and not self.player.sprite.on_ground:
+                    #if player_rect.y<enemy.rect.y:
+                    self.points += 10
+                    enemy.kill()
+                else:
+                    self.health-=1
     
     def run(self): #elemek megrajzolása
         self.horizontal_movement_collision() #ütközések
@@ -101,3 +130,6 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.other_tiles.draw(self.display_surface) #díszítőelemek kirajzolása
         self.player.update() #játékos frissítése
         self.player.draw(self.display_surface) #játékos kirajzolása a (játékablakban)
+        self.statsOnScreen() #hp és pontok megjelenítése
+        self.hitCrate()
+        self.hitEnemy()

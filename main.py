@@ -14,6 +14,7 @@ if __name__ == "__main__": #chatgpt szerint ez hasznos, hogy jól fussanak le a 
 
     #szint
     level=Level(level_map,screen)#hozz létre egy szint objektumot a levelmap(ami most settingsben van) alapján a screenre
+                                #levelmap = Level classban ez a layout
 
     running=True #futtatás
     while running:

@@ -17,7 +17,6 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         self.gravity=0.8
         self.jump_speed=-16
         self.on_ground=True #földön van e
-        self.health=3
 
         self.status='idle' #kezdő státusz
         self.facing_right=True #jobbranéz
@@ -73,7 +72,7 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         self.direction.y=self.jump_speed #irányváltozás felfelé ekkora sebességgel
 
     def death(self): #ha leesik meghal 
-        if self.rect.top > HEIGHT or self.health<=0:
+        if self.rect.top > HEIGHT:
             pygame.quit()
 
     def update(self): #játékos folyamatos frissítése
