@@ -95,24 +95,23 @@ class Level: # szintek önálló osztály, nem sprite osztály
             if pygame.sprite.spritecollide(enemy, self.constraints, False): #ha ellenség ütközik a térelemmel, akkor nem törlődik, hanem...
                 enemy.reverse() #megfordul az enemy
 
-    def hitCrate(self): #ütközés dobozzal
+    def hitCrate(self): #játékos ütközés dobozzal
         for crate in self.crates:
             if self.player.sprite.rect.colliderect(crate.rect):
                 self.health+=1
                 self.crates.remove(crate)
 
-    def hitEnemy(self):
-        player_rect = self.player.sprite.rect
-        #enemies_hit = pygame.sprite.spritecollide(self.player.sprite, self.enemys, False)
-    
-        for enemy in self.enemys:
-            if player_rect.colliderect(enemy.rect):
-                if player_rect.bottom>enemy.rect.top and not self.player.sprite.on_ground:
-                    #if player_rect.y<enemy.rect.y:
-                    self.points += 10
+    def hitEnemy(self): #játékos ütközés az ellenséggel
+        player_rect = self.player.sprite.rect 
+        for enemy in self.enemys: #ellenségeket szétszedem a csoportból
+            if player_rect.colliderect(enemy.rect): #ha ütköznek
+                if player_rect.bottom>enemy.rect.top and not self.player.sprite.on_ground: #és a játékos alja lentebb van mint az ellenség feje, mikor a játékos a levegőben van
+                    self.points+=10 #akkor nyer
+                    self.health+=1
                     enemy.kill()
-                else:
-                    self.health-=1
+                if player_rect.bottom==enemy.rect.bottom and self.player.sprite.on_ground: #ha a játékos és az ellen egy szinten a földön ütköznek
+                    self.player.sprite.jump() #akkor veszít
+                    self.health-=1  
     
     def run(self): #elemek megrajzolása
         self.horizontal_movement_collision() #ütközések
