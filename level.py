@@ -1,6 +1,6 @@
 import pygame
 from settings import tile_size, WIDTH
-from tiles import TerrainTile, Crate
+from tiles import TerrainTile, Crate, Tile
 from player import Player
 from enemy import Enemy
 
@@ -10,7 +10,8 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.terrain_tiles=pygame.sprite.Group() #tároló amibe majd pakoljuk bele a csempéket
         self.player=pygame.sprite.GroupSingle() #a játékos sprite csoportja
         self.crates=pygame.sprite.Group() #a ládák csoportja
-        self.enemys=pygame.sprite.Group() #ellenségek csoportja
+        self.enemys=pygame.sprite.Group() #ellenségek csoportja 
+        self.constraints=pygame.sprite.Group() #térelemek csoportja
         self.setup_level(level_data) #szintek legenerálásának elindítása
         self.world_shift=0 #platform mozgatás kameranézet
 
@@ -27,6 +28,9 @@ class Level: # szintek önálló osztály, nem sprite osztály
                 elif tile_type=='E': #ha ellenséget talál
                     tile=Enemy(tile_size,x,y)
                     self.enemys.add(tile) #hozzáadás az enemys csoporthoz
+                elif tile_type=='C': #térelemek
+                    constraint=Tile(tile_size,x,y)
+                    self.constraints.add(constraint)
                 elif tile_type!=' ': #csempe legenerálása
                     tile=TerrainTile(tile_size,x,y,tile_type) #csempe objektum(méret,koordináták,típus)
                     self.terrain_tiles.add(tile) #a létrejött csempét hozzáadjuk a csempegyűjtő grouphoz (lásd fentebb)
@@ -71,12 +75,21 @@ class Level: # szintek önálló osztály, nem sprite osztály
                     player.rect.top=sprite.rect.bottom #ütközés
                     player.direction.y=0 #megáll a mozgás irány változás
     
+    def enemy_collision_reverse(self): #ha az enemy ütközik vmivel akkor visszaforduljon
+        for enemy in self.enemys.sprites():
+            if pygame.sprite.spritecollide(enemy, self.constraints, False): #ha ellenség ütközik a térelemmel, akkor nem törlődik, hanem...
+                enemy.reverse() #megfordul az enemy
+    
     def run(self): #elemek megrajzolása
         self.horizontal_movement_collision() #ütközések
         self.vertical_movement_collision()
         self.scroll_x() #kamera mozgás jobbra balra
-        self.terrain_tiles.draw(self.display_surface) #játékablakban
         self.terrain_tiles.update(self.world_shift) #kamera mozgásnál a csempék mozgatása
-        self.player.draw(self.display_surface) #játékos kirajzolása a (játékablakban)
-        self.player.update() #játékos frissítése
+        self.terrain_tiles.draw(self.display_surface) #játékablakban
         self.crates.update(self.world_shift) #ládák elmozgatása 
+        self.constraints.update(self.world_shift) #térelemek frissítése kameramozgáskor
+        self.enemy_collision_reverse() #ellenség megfordítása
+        self.enemys.update(self.world_shift) #ellenség update
+        self.enemys.draw(self.display_surface) #ellenség kirajzolása
+        self.player.update() #játékos frissítése
+        self.player.draw(self.display_surface) #játékos kirajzolása a (játékablakban)
