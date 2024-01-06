@@ -1,6 +1,7 @@
 import pygame
 from support import import_folder
 from settings import HEIGHT
+from sounds import *
 
 class Player(pygame.sprite.Sprite): #játékos osztály
     def __init__(self, pos):
@@ -32,15 +33,22 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         if keys[pygame.K_RIGHT]: #jobb
             self.direction.x=1 #iránymódosítás
             self.facing_right=True #jobbranéz
+            #pygame.mixer.music.stop() #hang a járkálásra
+            #step.play()
         elif keys[pygame.K_LEFT]: #bal
             self.direction.x=-1 #iránymódosítás
             self.facing_right=False #balranéz
+            #pygame.mixer.music.stop() #hang a járkálásra
+            #step.play()
         else:
             self.direction.x=0 #ha nincs elmozdulás nincs iránymódosítás
+            #pygame.mixer.music.stop()
 
         if keys[pygame.K_SPACE] and self.on_ground: #ugrás
-            self.on_ground=False
-            self.jump()
+            self.on_ground=False #nem vagy a földön
+            self.jump() #ugrás 
+            pygame.mixer.music.stop() #minden hang stop
+            jump.play() #ugrás hang
 
     def get_status(self): #karakter státusz változása
         if self.direction.y<0:

@@ -2,8 +2,10 @@ if __name__ == "__main__": #chatgpt szerint ez hasznos, hogy jól fussanak le a 
     import pygame
     from settings import * #settings.py fájlból behúz mindent
     from level import Level
+    from sounds import win
 
     pygame.init() #inicializálja magát a pygame
+    pygame.mixer.init() #hang inicializálása
     screen=pygame.display.set_mode((WIDTH,HEIGHT)) #meghatározza az ablakot
     pygame.display.set_caption('My Firs Platformer') #főcím
     clock=pygame.time. Clock() #időzítő
@@ -28,6 +30,7 @@ if __name__ == "__main__": #chatgpt szerint ez hasznos, hogy jól fussanak le a 
         #keys=pygame.key.get_pressed() #lehet lenyomni billentyűt
 
         if start: #kezdőképernyő
+            win.play()
             font=level.setup_font(72) #főcím betűtípusa
             text=font.render('My First Platformer', True, DESERT) #szövege
             text_rect=text.get_rect(center=(WIDTH/2,HEIGHT/3)) #helye

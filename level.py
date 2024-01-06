@@ -3,6 +3,7 @@ from settings import tile_size, WIDTH, HEIGHT, others, DESERT, RED
 from tiles import TerrainTile, Crate, Tile, OtherTile
 from player import Player
 from enemy import Enemy
+from sounds import *
 
 class Level: # szintek önálló osztály, nem sprite osztály
     def __init__(self, level_data, surface): #surface a felület, vagyis a képernyő, leveldata hogy melyik szint
@@ -94,6 +95,8 @@ class Level: # szintek önálló osztály, nem sprite osztály
             if self.player.sprite.rect.colliderect(crate.rect):
                 self.health+=1
                 self.crates.remove(crate)
+                pygame.mixer.music.stop() #minden hang stop
+                hit.play() #ütéshang
 
     def hitEnemy(self): #játékos ütközés az ellenséggel
         player_rect = self.player.sprite.rect 
@@ -104,9 +107,13 @@ class Level: # szintek önálló osztály, nem sprite osztály
                     self.health+=1
                     self.enemys.remove(enemy)
                     #enemy.kill() #nem tökéletesen töröl
+                    pygame.mixer.music.stop() #mind hang stop
+                    hit.play() #ütés hang
                 if player_rect.bottom==enemy.rect.bottom and self.player.sprite.on_ground: #ha a játékos és az ellen egy szinten a földön ütköznek
                     self.player.sprite.jump() #akkor veszít
-                    self.health-=1  
+                    self.health-=1
+                    pygame.mixer.music.stop() #minden hang stop
+                    jump.play()  #ugrás hang
 
     def setup_font(self,size): #betűtípus beállítása
         font_path='img/font/ARCADEPI.TTF' #elérés
@@ -122,9 +129,13 @@ class Level: # szintek önálló osztály, nem sprite osztály
     
     def end_game(self): #játék vége
         if self.health<=0 or self.player.sprite.rect.top > HEIGHT: #ha az életerő kisebb vagy egyenlő mint nulla akkor vége vagy leesik
+            pygame.mixer.music.stop() #minden hang stop
+            dead.play() #vége hang
             self.end_game_text(56,'LOSER') #szöveg kiírása
             self.restart_game() #játék újrakezdése
         if self.enemys.sprites()==[] and self.player.sprite.on_ground: #ha már nincs ellenség
+            pygame.mixer.music.stop() #minden hang stop
+            win.play() #vége hang
             self.end_game_text(56,'VICTORY') #szöveg
             self.restart_game() #újrakezdés
 
