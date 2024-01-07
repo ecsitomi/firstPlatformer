@@ -89,3 +89,5 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         self.animate() #animálás
         #self.step_sounds() #mozgáshang lejátszás 
 
+#leesésnél tudjön ütni
+        
