@@ -8,6 +8,7 @@ tile_size=64 #csempek szélessége/magassága pixelben
 
 #pálya szerkezete string listában
 level_map = [
+{'data': [
     '                                                        ',
     '                                                        ',
     '          T2                          T2                ',
@@ -18,7 +19,23 @@ level_map = [
     'np           noooop         np           noooop         ',
     '431P25T    232    2T  322T1C431E25TC   232    2T  322T1 ',
     'abbbbbc   2abbcT  ac  abbbc abbbbbc   2abbcT  ac  abbbc ',
-    'deeeeef   aheejc  df  deeejcdeeeeef   aheejc  df  deeejc']
+    'deeeeef   aheejc  df  deeejcdeeeeef   aheejc  df  deeejc'
+]},
+{'data': [
+    '                                                        ',
+    '                                                        ',
+    '                                                        ',
+    '                                                        ',
+    '                                                        ',
+    '                                                        ',
+    '                                                        ',
+    '                                                        ',
+    '431P25T    232    2T  322T1C431E25TC   232    2T  322T1 ',
+    'abbbbbc   2abbcT  ac  abbbc abbbbbc   2abbcT  ac  abbbc ',
+    'deeeeef   aheejc  df  deeejcdeeeeef   aheejc  df  deeejc'
+]}
+]
+
 
 """
   terrain: a-p
@@ -41,4 +58,4 @@ others = { #különböző pályaelemek kódjai
 }  
 
 WIDTH=1200 #képernyő szélessége
-HEIGHT=len(level_map)*tile_size #pálya magassága (sorok a listában) * a pixel számmal
+HEIGHT=len(level_map[0]['data'])*tile_size #pálya magassága (sorok a listában) * a pixel számmal

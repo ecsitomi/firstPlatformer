@@ -1,5 +1,5 @@
 import pygame
-from settings import tile_size, WIDTH, HEIGHT, others, DESERT, RED
+from settings import tile_size, WIDTH, HEIGHT, others, DESERT, RED, level_map
 from tiles import TerrainTile, Crate, Tile, OtherTile
 from player import Player
 from enemy import Enemy
@@ -8,7 +8,8 @@ from sounds import *
 class Level: # szintek önálló osztály, nem sprite osztály
     def __init__(self, level_data, surface): #surface a felület, vagyis a képernyő, leveldata hogy melyik szint
         self.display_surface=surface #játékablak, hogy hol rajzolja meg az elemeket
-        self.leveldata=level_data
+        self.leveldata=level_data #betöltött szint
+        self.level=0 #első szint
         self.terrain_tiles=pygame.sprite.Group() #tároló amibe majd pakoljuk bele a csempéket
         self.player=pygame.sprite.GroupSingle() #a játékos sprite csoportja
         self.crates=pygame.sprite.Group() #a ládák csoportja
@@ -121,7 +122,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
     
     def statsOnScreen(self): #életerő és pontok kiiratása
         font=self.setup_font(36) #betűtípus és méret
-        text=font.render(f'Health: {self.health} Points: {self.points}', True, DESERT) #mit
+        text=font.render(f'Health: {self.health} Points: {self.points} Level: {self.level+1}', True, DESERT) #mit
         text_rect=text.get_rect(topleft=(40,50)) #hova
         self.display_surface.blit(text,text_rect) #megjelenítés
     
@@ -136,9 +137,15 @@ class Level: # szintek önálló osztály, nem sprite osztály
             background.stop() #zene leáll
             win.play() #vége hang
             background.play(-1) #zene indul
-            self.end_game_text(56,'VICTORY') #szöveg
-            self.restart_game() #újrakezdés
         #azért kell még itt indítani a háttérzenét mert van benne csúszás így pont jól jön ki a kezdés
+            if self.level==len(level_map)-1: #hogy ne indexeljem túl a játékot
+                self.end_game_text(56,'CONGRATULATION!') #véget ért a játék
+                self.level=0 #újrakezdi az elejéről
+                self.leveldata=level_map[self.level]['data']
+                self.restart_game() #újrakezdés
+            else:
+                self.end_game_text(56,'VICTORY') #szöveg
+                self.next_game() #következő szint
 
     def end_game_text(self, size, text): #záró szöveg kiíratása
         font=self.setup_font(size) #betűtípus, méret beállítása
@@ -157,6 +164,18 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.constraints.empty()
         self.other_tiles.empty()
         self.setup_level(self.leveldata) # Újra inicializáljuk a szintet
+
+    def next_game(self): #következő szintre lépés
+        self.health=3 #beállítja az alap szinteket
+        #self.points=0
+        self.level+=1 #kövi szint
+        self.terrain_tiles.empty() # Töröljük az összes sprite csoport tartalmát
+        self.crates.empty()
+        self.enemys.empty()
+        self.constraints.empty()
+        self.other_tiles.empty()
+        self.leveldata=level_map[self.level]['data'] #a kövi szint pályája
+        self.setup_level(self.leveldata) #legenerálás
     
     def run(self): #elemek megrajzolása
         self.horizontal_movement_collision() #ütközések

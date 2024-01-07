@@ -15,7 +15,7 @@ if __name__ == "__main__": #chatgpt szerint ez hasznos, hogy jól fussanak le a 
     bg_rect=bg_surf.get_rect(bottomleft=(0,HEIGHT))
 
     #szint
-    level=Level(level_map,screen)#hozz létre egy szint objektumot a levelmap(ami most settingsben van) alapján a screenre
+    level=Level(level_map[0]['data'],screen)#hozz létre egy szint objektumot a levelmap(ami most settingsben van) alapján a screenre
                                 #levelmap = Level classban ez a layout
 
     start=True #legyen e kezdőképernyő
