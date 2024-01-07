@@ -22,8 +22,8 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         self.status='idle' #kezdő státusz
         self.facing_right=True #jobbranéz
 
-    '''
-    def step_sounds(self): #mozgáshang lejátszás - sajnos rossz minőségű és viszhangzik
+    ''' #mozgáshang lejátszás - sajnos rossz minőségű és viszhangzik
+    def step_sounds(self): 
         if abs(self.direction.x)>0 and self.on_ground:
             step.play(-1)
         else:

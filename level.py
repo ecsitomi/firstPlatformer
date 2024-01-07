@@ -117,7 +117,6 @@ class Level: # szintek önálló osztály, nem sprite osztály
     def setup_font(self,size): #betűtípus beállítása
         font_path='img/font/ARCADEPI.TTF' #elérés
         font_size=size #méret
-        #font=pygame.font.Font(font_path,font_size)
         return pygame.font.Font(font_path,font_size) #visszaadott érték
     
     def statsOnScreen(self): #életerő és pontok kiiratása
@@ -139,6 +138,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
             background.play(-1) #zene indul
             self.end_game_text(56,'VICTORY') #szöveg
             self.restart_game() #újrakezdés
+        #azért kell még itt indítani a háttérzenét mert van benne csúszás így pont jól jön ki a kezdés
 
     def end_game_text(self, size, text): #záró szöveg kiíratása
         font=self.setup_font(size) #betűtípus, méret beállítása
