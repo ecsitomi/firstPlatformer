@@ -1,7 +1,7 @@
 import pygame
 from support import import_folder
 from settings import HEIGHT
-from sounds import *
+from sounds import jump 
 
 class Player(pygame.sprite.Sprite): #játékos osztály
     def __init__(self, pos):
@@ -18,10 +18,18 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         self.gravity=0.8
         self.jump_speed=-16
         self.on_ground=True #földön van e
-
+        self.counter=0
         self.status='idle' #kezdő státusz
         self.facing_right=True #jobbranéz
 
+    '''
+    def step_sounds(self): #mozgáshang lejátszás - sajnos rossz minőségű és viszhangzik
+        if abs(self.direction.x)>0 and self.on_ground:
+            step.play(-1)
+        else:
+            step.stop()
+    '''
+    
     def import_character_assets(self): #hogyan jussunk el a képekhez
         character_path='img/character/' #hol a karakter könyvtár
         for animation in self.animations.keys(): #animation szótárban hozzá akarom rendelni a keys-eket
@@ -33,21 +41,17 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         if keys[pygame.K_RIGHT]: #jobb
             self.direction.x=1 #iránymódosítás
             self.facing_right=True #jobbranéz
-            #pygame.mixer.music.stop() #hang a járkálásra
-            #step.play()
+
         elif keys[pygame.K_LEFT]: #bal
             self.direction.x=-1 #iránymódosítás
             self.facing_right=False #balranéz
-            #pygame.mixer.music.stop() #hang a járkálásra
-            #step.play()
+
         else:
             self.direction.x=0 #ha nincs elmozdulás nincs iránymódosítás
-            #pygame.mixer.music.stop()
 
         if keys[pygame.K_SPACE] and self.on_ground: #ugrás
             self.on_ground=False #nem vagy a földön
             self.jump() #ugrás 
-            pygame.mixer.music.stop() #minden hang stop
             jump.play() #ugrás hang
 
     def get_status(self): #karakter státusz változása
@@ -83,4 +87,5 @@ class Player(pygame.sprite.Sprite): #játékos osztály
         self.get_input() #milyen billenytyű parancsot kapott
         self.get_status() #mozgás státusz
         self.animate() #animálás
+        #self.step_sounds() #mozgáshang lejátszás 
 

@@ -18,8 +18,8 @@ class Level: # szintek önálló osztály, nem sprite osztály
         self.world_shift=0 #platform mozgatás kameranézet
         self.health=3
         self.points=0
-        #self.font=self.setup_font()
         self.setup_level(level_data) #szintek legenerálásának elindítása
+        background.play(-1) #háttérzene végtelenítve    
 
     def setup_level(self,layout): #szintek legenerálása metódus, itt a layout=level_data
         for row_index, row in enumerate(layout): #sorok és indexük
@@ -95,7 +95,7 @@ class Level: # szintek önálló osztály, nem sprite osztály
             if self.player.sprite.rect.colliderect(crate.rect):
                 self.health+=1
                 self.crates.remove(crate)
-                pygame.mixer.music.stop() #minden hang stop
+                #pygame.mixer.music.stop() #minden hang stop
                 hit.play() #ütéshang
 
     def hitEnemy(self): #játékos ütközés az ellenséggel
@@ -107,13 +107,12 @@ class Level: # szintek önálló osztály, nem sprite osztály
                     self.health+=1
                     self.enemys.remove(enemy)
                     #enemy.kill() #nem tökéletesen töröl
-                    pygame.mixer.music.stop() #mind hang stop
                     hit.play() #ütés hang
                 if player_rect.bottom==enemy.rect.bottom and self.player.sprite.on_ground: #ha a játékos és az ellen egy szinten a földön ütköznek
                     self.player.sprite.jump() #akkor veszít
                     self.health-=1
-                    pygame.mixer.music.stop() #minden hang stop
                     jump.play()  #ugrás hang
+                    hit.play()
 
     def setup_font(self,size): #betűtípus beállítása
         font_path='img/font/ARCADEPI.TTF' #elérés
@@ -129,13 +128,15 @@ class Level: # szintek önálló osztály, nem sprite osztály
     
     def end_game(self): #játék vége
         if self.health<=0 or self.player.sprite.rect.top > HEIGHT: #ha az életerő kisebb vagy egyenlő mint nulla akkor vége vagy leesik
-            pygame.mixer.music.stop() #minden hang stop
+            background.stop() #zene leáll
             dead.play() #vége hang
+            background.play(-1) #zene indul
             self.end_game_text(56,'LOSER') #szöveg kiírása
             self.restart_game() #játék újrakezdése
         if self.enemys.sprites()==[] and self.player.sprite.on_ground: #ha már nincs ellenség
-            pygame.mixer.music.stop() #minden hang stop
+            background.stop() #zene leáll
             win.play() #vége hang
+            background.play(-1) #zene indul
             self.end_game_text(56,'VICTORY') #szöveg
             self.restart_game() #újrakezdés
 
